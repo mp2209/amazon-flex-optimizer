@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Flex Route Optimizer</title>
+
+    <!-- Leaflet.js for map rendering -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Chart.js for algorithm comparison -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <script>
+        const GOOGLE_MAPS_API_KEY = '{{ google_maps_api_key }}';
+    </script>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header>
+            <div class="header-logo">
+                <span class="logo-text">amazon flex</span>
+                <span class="header-subtitle">Route Optimizer</span>
+            </div>
+            <div class="header-right">
+                <span class="header-tagline">Optimize your delivery route &middot; Save time &amp; gas</span>
+                <button id="theme-toggle" class="theme-toggle" onclick="toggleTheme()">
+                    <span class="icon" id="theme-icon">🌙</span>
+                    <span id="theme-label">Dark</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Setup Screen -->
+        <div id="setup-screen" class="screen">
+            <div class="setup-container">
+                <h2>Plan Your Shift</h2>
+                <p class="subtitle">Enter your starting point and delivery stops to find the optimal route.</p>
+
+                <div class="input-group">
+                    <label for="start-address">Starting Point (Warehouse or Home)</label>
+                    <input type="text" id="start-address" placeholder="e.g., 123 Main St, Atlanta, GA" />
+                </div>
+
+                <div class="input-group">
+                    <label for="stops-input">Delivery Stops</label>
+                    <p class="hint">Enter one address per line, or upload a CSV.</p>
+                    <textarea id="stops-input" rows="6" placeholder="456 Oak Ave, Atlanta, GA&#10;789 Pine St, Atlanta, GA&#10;321 Elm Dr, Atlanta, GA"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="csv-upload">Or upload a CSV file</label>
+                    <input type="file" id="csv-upload" accept=".csv" />
+                </div>
+
+                <button id="optimize-btn" class="btn-primary">Optimize Route</button>
+                <div id="error-message" class="error"></div>
+            </div>
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="screen hidden">
+            <div class="loader"></div>
+            <p class="loading-text">Geocoding addresses &amp; computing routes...</p>
+            <p class="loading-hint">Using Google Maps APIs — this may take a few seconds.</p>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen hidden">
+            <!-- Map -->
+            <div id="map"></div>
+
+            <!-- Sidebar -->
+            <div id="sidebar">
+                <div class="sidebar-header">
+                    <h2>Shift Summary</h2>
+                    <button id="new-shift-btn" class="btn-secondary">New Shift</button>
+                </div>
+
+                <!-- Savings card -->
+                <div id="savings-card" class="card">
+                    <div class="savings-row">
+                        <span class="savings-label">Best Algorithm:</span>
+                        <span id="best-algo" class="savings-value">—</span>
+                    </div>
+                    <div class="savings-row">
+                        <span class="savings-label">Total Distance:</span>
+                        <span id="best-distance" class="savings-value">—</span>
+                    </div>
+                    <div class="savings-row">
+                        <span class="savings-label">Est. Drive Time:</span>
+                        <span id="best-time" class="savings-value">—</span>
+                    </div>
+                    <div class="savings-row">
+                        <span class="savings-label">Gas Saved:</span>
+                        <span id="gas-saved" class="savings-value">—</span>
+                    </div>
+                </div>
+
+                <!-- Algorithm selector -->
+                <div class="algo-selector">
+                    <label>View route from:</label>
+                    <select id="algo-select">
+                        <option value="original">Original (as entered)</option>
+                        <option value="nearest_neighbor">Nearest Neighbor</option>
+                        <option value="2opt">2-opt</option>
+                        <option value="simulated_annealing">Simulated Annealing</option>
+                        <option value="ortools">Google OR-Tools</option>
+                    </select>
+                </div>
+
+                <!-- Next Stop panel (shows when a stop is clicked) -->
+                <div id="next-stop-panel" class="next-stop-panel hidden">
+                    <h3>Next Stop</h3>
+                    <div id="next-stop-content"></div>
+                </div>
+
+                <!-- Stop list -->
+                <div id="stop-list" class="stop-list">
+                    <h3>Delivery Order</h3>
+                    <ol id="ordered-stops"></ol>
+                </div>
+
+                <!-- Algorithm comparison chart -->
+                <div class="comparison-section">
+                    <h3>Algorithm Comparison</h3>
+                    <canvas id="comparison-chart" width="300" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
