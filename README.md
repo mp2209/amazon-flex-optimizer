@@ -7,11 +7,10 @@ A web application that optimizes delivery routes for Amazon Flex drivers using m
 - **Address input** — Enter a starting point (warehouse/home) and up to 35 delivery stops, or upload a CSV
 - **Google Maps integration** — Real geocoding, driving distances, and route geometry via Google Maps Platform APIs
 - **Interactive map** — Leaflet.js with Google Maps tiles, custom package markers, route polyline
-- **5 TSP algorithms:**
+- **4 TSP algorithms:**
   - Brute force (optimal but O(n!) — only for ≤8 stops)
   - Nearest neighbor (greedy heuristic, O(n²))
   - 2-opt local search (improves nearest neighbor with edge swaps)
-  - Simulated annealing (probabilistic optimization)
   - Google OR-Tools (industry-standard constraint programming solver)
 - **Original route comparison** — See how much you save vs. the order you entered
 - **Open TSP** — Route ends at the last stop instead of returning to the warehouse, saving unnecessary driving
@@ -97,7 +96,7 @@ The Traveling Salesman Problem (TSP) asks: *given a list of locations and distan
 
 TSP is **NP-complete**, proven by reduction from the Hamiltonian Cycle problem. This means:
 - **Brute force** checks all n! permutations — works for n ≤ 10 but becomes infeasible
-- **Heuristics** (nearest neighbor, 2-opt, simulated annealing) trade optimality for speed
+- **Heuristics** (nearest neighbor, 2-opt) trade optimality for speed
 - **OR-Tools** uses constraint programming with guided local search — the industry-standard approach
 
 This project solves the **open TSP variant**: the route starts at the warehouse and ends at the last delivery stop without returning to the warehouse, which better models a real Amazon Flex shift.
@@ -127,7 +126,6 @@ amazon-flex-optimizer/
 │   ├── brute_force.py      # O(n!) optimal solver (≤8 stops)
 │   ├── nearest_neighbor.py # O(n²) greedy heuristic
 │   ├── two_opt.py          # Local search improvement
-│   ├── simulated_annealing.py  # Probabilistic metaheuristic
 │   └── ortools_solver.py   # Google OR-Tools constraint programming solver
 ├── static/
 │   ├── style.css           # Amazon Flex theme + dark mode + next-stop panel

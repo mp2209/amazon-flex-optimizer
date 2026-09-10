@@ -620,7 +620,6 @@ function updateSummary(data) {
         'brute_force': 'Brute Force (Optimal)',
         'nearest_neighbor': 'Nearest Neighbor',
         '2opt': '2-opt',
-        'simulated_annealing': 'Simulated Annealing',
         'ortools': 'Google OR-Tools',
     };
 
@@ -664,7 +663,6 @@ function drawComparisonChart(data) {
         'brute_force': 'Brute Force',
         'nearest_neighbor': 'Nearest Neighbor',
         '2opt': '2-opt',
-        'simulated_annealing': 'Sim. Annealing',
         'ortools': 'OR-Tools',
     };
 

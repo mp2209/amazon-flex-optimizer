@@ -3,7 +3,7 @@ Flask backend for the Amazon Flex Route Optimizer.
 Handles:
 - Geocoding addresses via Google Maps Geocoding API
 - Computing driving distance matrix via Google Distance Matrix API
-- Running TSP algorithms (brute force, nearest neighbor, 2-opt, simulated annealing, OR-Tools)
+- Running TSP algorithms (brute force, nearest neighbor, 2-opt, OR-Tools)
 - Returning optimized routes with map geometry from Google Directions API
 """
 from flask import Flask, request, jsonify, render_template
@@ -14,7 +14,6 @@ from algorithms import (
     solve_brute_force,
     solve_nearest_neighbor,
     solve_2opt,
-    solve_simulated_annealing,
     solve_ortools,
     calculate_route_distance,
 )
@@ -86,7 +85,6 @@ def optimize():
     algorithms = {
         'nearest_neighbor': solve_nearest_neighbor,
         '2opt': solve_2opt,
-        'simulated_annealing': solve_simulated_annealing,
         'ortools': solve_ortools,
     }
 
