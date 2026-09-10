@@ -1,0 +1,4 @@
+# Backend .env (not committed)
+.env
+__pycache__/
+*.pyc

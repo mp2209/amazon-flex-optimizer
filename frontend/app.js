@@ -107,7 +107,7 @@ async function optimizeRoute() {
     document.getElementById('loading-screen').classList.remove('hidden');
 
     try {
-        const response = await fetch('/optimize', {
+        const response = await fetch(`${API_BASE_URL}/optimize`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ start: startAddress, stops: stops }),

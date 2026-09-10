@@ -12,9 +12,13 @@
     <!-- Chart.js for algorithm comparison -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="stylesheet" href="style.css" />
     <script>
-        const GOOGLE_MAPS_API_KEY = '{{ google_maps_api_key }}';
+        // Browser-side key used ONLY for map tiles.
+        // Must be a separate key from the server key (restricted to your Vercel domain).
+        const GOOGLE_MAPS_API_KEY = 'YOUR_BROWSER_MAPS_API_KEY';
+        // Backend API base URL (FastAPI on AWS EC2, behind HTTPS)
+        const API_BASE_URL = 'https://your-ec2-domain.example.com';
     </script>
 </head>
 <body>
@@ -118,7 +122,7 @@
                 </div>
 
                 <!-- Stop list -->
-                <div id="stop-list" class="stop-list">
+                <div class="stop-list">
                     <h3>Delivery Order</h3>
                     <ol id="ordered-stops"></ol>
                 </div>
@@ -132,6 +136,6 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <script src="app.js"></script>
 </body>
 </html>
