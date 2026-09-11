@@ -31,7 +31,7 @@ ALLOWED_ORIGINS = [
     "http://localhost:5500",
     "http://localhost:5001",
     "http://127.0.0.1:5500",
-    "https://amazon-flex-optimizer.vercel.app",  # TODO: replace with your real Vercel domain
+    "https://amazon-flex-optimizer.vercel.app",  
 ]
 
 app = FastAPI(title="Amazon Flex Route Optimizer API")
