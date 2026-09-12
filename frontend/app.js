@@ -113,6 +113,10 @@ async function optimizeRoute() {
             body: JSON.stringify({ start: startAddress, stops: stops }),
         });
 
+        if (!response.ok) {
+            throw new Error(`API error (${response.status}) — check that the API is reachable.`);
+        }
+
         const data = await response.json();
 
         if (data.error) {
