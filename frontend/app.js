@@ -22,9 +22,32 @@ const STOP_COLORS = [
     '#BA68C8', '#7986CB', '#4DB6AC', '#AED581',
 ];
 
+// Sample demo data — PUBLIC landmark addresses only (no personal/customer data).
+const DEMO_DATA = {
+    start: 'Georgia Aquarium, Atlanta, GA',
+    stops: [
+        'Piedmont Park, Atlanta, GA',
+        'Ponce City Market, Atlanta, GA',
+        'Fox Theatre, Atlanta, GA',
+        'Mercedes-Benz Stadium, Atlanta, GA',
+        'World of Coca-Cola, Atlanta, GA',
+        'Atlanta Botanical Garden, Atlanta, GA',
+        'Oakland Cemetery, Atlanta, GA',
+        'Lenox Square, Atlanta, GA',
+    ],
+};
+
+// Fill the form with demo data and run the optimizer
+function loadDemo() {
+    document.getElementById('start-address').value = DEMO_DATA.start;
+    document.getElementById('stops-input').value = DEMO_DATA.stops.join('\n');
+    optimizeRoute();
+}
+
 // Initialize the app
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('optimize-btn').addEventListener('click', optimizeRoute);
+    document.getElementById('demo-btn').addEventListener('click', loadDemo);
     document.getElementById('new-shift-btn').addEventListener('click', resetToSetup);
     document.getElementById('algo-select').addEventListener('change', () => {
         if (routeData) displayRoute(document.getElementById('algo-select').value);

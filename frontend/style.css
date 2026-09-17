@@ -241,6 +241,14 @@ input[type="file"] {
     color: white;
 }
 
+/* Demo disclaimer */
+.demo-disclaimer {
+    font-size: 0.72rem;
+    color: var(--text-muted, #888);
+    margin: 8px 0 0;
+    text-align: center;
+}
+
 /* Error message */
 .error {
     color: var(--amazon-error);
