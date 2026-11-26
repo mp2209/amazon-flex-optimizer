@@ -29,6 +29,11 @@ def solve_ortools(distance_matrix, start_index=0):
         """Returns the distance between two nodes (as int for OR-Tools)."""
         from_node = manager.IndexToNode(int(from_index))
         to_node = manager.IndexToNode(int(to_index))
+        # Open TSP: the routing model always closes the loop back to the depot,
+        # so make that return leg free. Otherwise the solver optimizes a round
+        # trip and the route it picks is wrong once the return leg is dropped.
+        if to_node == start_index:
+            return 0
         return int(distance_matrix[from_node][to_node])
 
     transit_callback_index = routing.RegisterTransitCallback(distance_callback)
