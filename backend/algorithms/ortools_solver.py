@@ -8,7 +8,7 @@ from ortools.constraint_solver import routing_enums_pb2
 from ortools.constraint_solver import pywrapcp
 
 
-def solve_ortools(distance_matrix, start_index=0):
+def solve_ortools(distance_matrix, start_index=0, time_limit_s=5.0):
     """
     Use Google OR-Tools to solve TSP (open variant — no return to start).
     Returns route as list of indices, starting at start_index.
@@ -47,7 +47,8 @@ def solve_ortools(distance_matrix, start_index=0):
     search_parameters.local_search_metaheuristic = (
         routing_enums_pb2.LocalSearchMetaheuristic.GUIDED_LOCAL_SEARCH
     )
-    search_parameters.time_limit.seconds = 5  # 5 second time limit
+    # Guided local search never stops on its own: it runs until this limit.
+    search_parameters.time_limit.FromMilliseconds(int(time_limit_s * 1000))
 
     # Solve
     solution = routing.SolveWithParameters(search_parameters)

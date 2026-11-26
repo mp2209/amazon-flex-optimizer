@@ -15,8 +15,8 @@ IMAGE    ?= flex-api
 API_URL  ?= http://localhost:$(API_PORT)
 
 .DEFAULT_GOAL := help
-.PHONY: help install env-check api web dev smoke demo docker-build docker-run docker-stop \
-        deploy-api deploy-web clean
+.PHONY: help install env-check api web dev smoke demo bench-fetch bench bench-report demo-offline \
+        demo-record docker-build docker-run docker-stop deploy-api deploy-web clean
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*##"; printf "Usage: make \033[36m<target>\033[0m\n\n"} \
@@ -67,6 +67,25 @@ demo: ## POST the built-in demo shift to a running API and print savings
 	  a=d.get("algorithms") or sys.exit(d.get("error")); o=a["original"]["distance_m"]; \
 	  [print("%-17s %7.2f mi  %5.1f%% saved  %8.1f ms" % (k, v["distance_mi"], 100*(o-v["distance_m"])/o, v["time_ms"])) \
 	   for k, v in a.items()]'
+
+# --- Benchmark and write-up (see bench/results/findings.md) --------------------
+
+bench-fetch: install env-check ## One-time: fetch the real road-distance matrix (41 geocodes, 1,681 elements)
+	$(VPY) bench/fetch_matrix.py
+
+bench: install ## Run every solver on 100 shifts offline (~8 min), then write the report
+	$(VPY) bench/run.py --shifts 25 --jobs 8
+	$(MAKE) bench-report
+
+bench-report: install ## Rebuild results.md and charts from the last benchmark run
+	$(VPY) bench/api_calls.py
+	$(VPY) bench/analyze.py
+
+demo-offline: install ## Replay the demo shift and a 40-stop shift offline in the terminal
+	$(VPY) scripts/demo.py
+
+demo-record: install ## Re-record docs/demo.svg
+	$(VPY) scripts/demo.py --record docs/demo.svg
 
 # --- Docker ------------------------------------------------------------------
 

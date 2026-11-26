@@ -1,0 +1,43 @@
+# Public Atlanta places used as delivery stops in the benchmark.
+# Landmarks only: no homes, customers or personal addresses.
+Georgia Aquarium, Atlanta, GA
+Piedmont Park, Atlanta, GA
+Ponce City Market, Atlanta, GA
+Fox Theatre, Atlanta, GA
+Mercedes-Benz Stadium, Atlanta, GA
+World of Coca-Cola, Atlanta, GA
+Atlanta Botanical Garden, Atlanta, GA
+Oakland Cemetery, Atlanta, GA
+Lenox Square, Atlanta, GA
+High Museum of Art, Atlanta, GA
+Krog Street Market, Atlanta, GA
+Centennial Olympic Park, Atlanta, GA
+Georgia State Capitol, Atlanta, GA
+Zoo Atlanta, Atlanta, GA
+Atlanta History Center, Atlanta, GA
+Fernbank Museum of Natural History, Atlanta, GA
+Emory University, Atlanta, GA
+Georgia Institute of Technology, Atlanta, GA
+Martin Luther King Jr. National Historical Park, Atlanta, GA
+National Center for Civil and Human Rights, Atlanta, GA
+Little Five Points, Atlanta, GA
+Inman Park/Reynoldstown Station, Atlanta, GA
+Decatur Square, Decatur, GA
+Agnes Scott College, Decatur, GA
+East Lake Golf Club, Atlanta, GA
+Atlantic Station, Atlanta, GA
+Westside Provisions District, Atlanta, GA
+Chastain Park, Atlanta, GA
+Phipps Plaza, Atlanta, GA
+Morehouse College, Atlanta, GA
+Spelman College, Atlanta, GA
+Clark Atlanta University, Atlanta, GA
+Historic Fourth Ward Park, Atlanta, GA
+Jimmy Carter Presidential Library and Museum, Atlanta, GA
+Atlanta City Hall, Atlanta, GA
+Sweet Auburn Curb Market, Atlanta, GA
+Woodruff Arts Center, Atlanta, GA
+Freedom Park, Atlanta, GA
+Candler Park, Atlanta, GA
+Westview Cemetery, Atlanta, GA
+State Farm Arena, Atlanta, GA

@@ -7,13 +7,76 @@ A web application that optimizes delivery routes for Amazon Flex drivers using m
 - **Backend** — FastAPI (containerized with Docker), deployed on AWS EC2
 - **Google Maps Platform APIs** — geocoding, driving distances, route geometry
 
+## Findings
+
+I ran every solver in the app on 100 delivery shifts (25 each of 7, 15, 25
+and 40 stops) drawn from 41 public Atlanta places, scored on real driving
+distances fetched once from Google. That made 1,000 routes. Brute force gives
+the true optimum at 7 stops. Above that, the best route is the shortest any
+solver found, usually OR-Tools given 30 seconds.
+
+| Solver | Mean distance over the best route (7 / 15 / 25 / 40 stops) | Best route found | Time at 40 stops |
+|---|---|---|---|
+| **Google OR-Tools (open route)** | **0.0% / 0.0% / 0.0% / 0.1%** | **96 of 100** | 5.0 s |
+| 2-opt | 1.2% / 4.7% / 4.5% / 5.8% | 25 of 100 | 8.6 ms |
+| Nearest neighbor (driving by eye) | 11.9% / 21.8% / 22.7% / 21.3% | 2 of 100 | 0.05 ms |
+| OR-Tools before the fix (round trip) | 19.5% / 10.2% / 5.2% / 6.2% | 9 of 100 | 5.0 s |
+
+![Gap to the best route by solver and shift size](bench/results/charts/gap_by_size.svg)
+
+1. **OR-Tools found the best route on 96 of 100 shifts** and never lost to
+   2-opt (75 wins, 25 ties). On every 7-stop shift it matched brute force.
+2. **Against driving by eye, the optimizer saves 17% of a full shift.**
+   That's about 11 miles, 22 minutes and $2.78 of fuel on 40 stops, compared
+   with always going to the nearest stop next. Against the random entered
+   order the saving looks far bigger (43–75%), but that mostly measures how
+   bad a random order is.
+3. **OR-Tools used to lose to the greedy heuristic.** Its routing model
+   plans a loop back to the depot, and the app dropped the return leg
+   afterwards. So it optimized the drive home, and on 7-stop shifts it was
+   19.5% off the optimum. A one-line fix (legs back to the start cost 0)
+   took that to 0.0%. More in the
+   [blog post](docs/blog/the-solver-that-planned-a-round-trip.md).
+4. **Most of OR-Tools' 5 seconds buys nothing.** Up to 15 stops, 0.2 s finds
+   the same routes, and at 40 stops 1 s is within 0.2%. Brute force solves 7
+   stops exactly in under 2 ms.
+
+The method, every table and the limitations are in
+[bench/results/findings.md](bench/results/findings.md). Generated tables
+and raw routes are in [bench/results](bench/results/results.md).
+
+### The numbers
+
+| Measure | Result | How |
+|---|---|---|
+| Distance saved vs. driving by eye | 10% (7 stops) to 18% (25 stops); 11.1 mi per 40-stop shift | OR-Tools vs nearest neighbor, paired over 25 shifts per size |
+| Optimality | 25 of 25 seven-stop shifts optimal; 96 of 100 overall match the best route found | vs brute force (7 stops) and OR-Tools at 30 s |
+| Google Maps requests, 40 stops | 71 per optimize call: 41 geocodes, 22 Distance Matrix (1,681 elements, ≤100 each), 8 Directions | backend request code run against a stubbed network ([api_calls.py](bench/api_calls.py)) |
+| Road asymmetry | 795 of 820 place pairs differ by direction; 205 by more than 10% | the fetched 41 x 41 matrix |
+| Response time | OR-Tools fixed at 5.0 s; nearest neighbor and 2-opt under 10 ms at 40 stops | median wall-clock per shift |
+
+## Demo
+
+The app's "Try a Demo Shift" button, then a full 40-stop shift, replayed in
+the terminal on the saved road distances with
+[`scripts/demo.py`](scripts/demo.py) (about 25 seconds, no API calls):
+
+![Route optimizer demo](docs/demo.svg)
+
+The same demo shift in the app. OR-Tools' route is 16.93 mi, and the shift
+summary shows 8.9 mi ($2.23) saved against the entered order. Stop 6 is the
+mis-geocoded Botanical Garden from finding 7 in the
+[findings](bench/results/findings.md):
+
+![The demo shift in the app](docs/images/app-demo-shift.png)
+
 ## Features
 
 - **Address input** — Enter a starting point (warehouse/home) and up to 40 delivery stops, or upload a CSV
 - **Google Maps integration** — Real geocoding, driving distances, and route geometry via Google Maps Platform APIs
 - **Interactive map** — Leaflet.js with Google Maps tiles, custom package markers, route polyline
 - **4 TSP algorithms:**
-  - Brute force (optimal but O(n!) — only for ≤8 stops)
+  - Brute force (optimal but O(n!) — only up to 7 stops plus the start)
   - Nearest neighbor (greedy heuristic, O(n²))
   - 2-opt local search (improves nearest neighbor with edge swaps)
   - Google OR-Tools (industry-standard constraint programming solver)
@@ -59,11 +122,21 @@ amazon-flex-optimizer/
 │       ├── nearest_neighbor.py  # O(n²) greedy heuristic
 │       ├── two_opt.py           # Local search improvement
 │       └── ortools_solver.py    # Google OR-Tools constraint programming solver
-└── frontend/                    # Static site (→ Vercel)
-    ├── index.html               # Main page with theme toggle + next-stop panel
-    ├── app.js                   # Frontend logic, Leaflet map, segment view, marker separation
-    ├── style.css               # Amazon Flex theme + dark mode + next-stop panel
-    └── vercel.json
+├── frontend/                    # Static site (→ Vercel)
+│   ├── index.html               # Main page with theme toggle + next-stop panel
+│   ├── app.js                   # Frontend logic, Leaflet map, segment view, marker separation
+│   ├── style.css               # Amazon Flex theme + dark mode + next-stop panel
+│   └── vercel.json
+├── bench/                       # Solver benchmark (offline after one fetch)
+│   ├── places.txt               # 41 public Atlanta places
+│   ├── fetch_matrix.py          # One-time Google fetch → data/atlanta.json
+│   ├── run.py                   # Every solver on 100 sampled shifts → results/runs.csv
+│   ├── api_calls.py             # Counts Google requests per optimize call (stubbed network)
+│   ├── analyze.py               # results.md, summary.json, charts
+│   └── results/findings.md      # What the benchmark found
+├── scripts/demo.py              # Terminal demo; --record writes docs/demo.svg
+├── docs/                        # Blog post, demo recording, screenshots
+└── Makefile                     # make help lists every command
 ```
 
 ## Setup
@@ -79,6 +152,19 @@ amazon-flex-optimizer/
 2. **Use two separate API keys** (important for a public deployment):
    - **Server key** — used by the backend for Geocoding / Distance Matrix / Directions. Restrict by the EC2 instance's IP address. Never exposed to the browser.
    - **Browser key** — used by the frontend only for map tiles. Restrict by HTTP referrer (your Vercel domain).
+
+### Quick start with make
+
+With `GOOGLE_MAPS_API_KEY` in `backend/.env`:
+
+```bash
+make dev            # API on :8000 + frontend on :5500 (Ctrl-C stops both)
+make demo-offline   # terminal demo on saved distances, no API calls
+make bench          # rerun the solver benchmark offline (~8 min)
+```
+
+`make help` lists the rest (Docker, deploys, `make bench-fetch` to refetch
+the distance matrix). The manual steps:
 
 ### Backend (local)
 

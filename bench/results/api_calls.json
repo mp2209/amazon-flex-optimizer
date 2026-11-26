@@ -1,0 +1,58 @@
+[
+ {
+  "stops": 7,
+  "locations": 8,
+  "geocode": 8,
+  "distance_matrix": 1,
+  "directions": 5,
+  "matrix_elements": 64,
+  "max_elements": 64,
+  "max_origins": 8,
+  "max_destinations": 8,
+  "max_waypoints": 6,
+  "total_requests": 14,
+  "matrix_requests_unbatched_min": 1
+ },
+ {
+  "stops": 15,
+  "locations": 16,
+  "geocode": 16,
+  "distance_matrix": 3,
+  "directions": 4,
+  "matrix_elements": 256,
+  "max_elements": 96,
+  "max_origins": 6,
+  "max_destinations": 16,
+  "max_waypoints": 14,
+  "total_requests": 23,
+  "matrix_requests_unbatched_min": 3
+ },
+ {
+  "stops": 25,
+  "locations": 26,
+  "geocode": 26,
+  "distance_matrix": 14,
+  "directions": 4,
+  "matrix_elements": 676,
+  "max_elements": 100,
+  "max_origins": 4,
+  "max_destinations": 25,
+  "max_waypoints": 24,
+  "total_requests": 44,
+  "matrix_requests_unbatched_min": 7
+ },
+ {
+  "stops": 40,
+  "locations": 41,
+  "geocode": 41,
+  "distance_matrix": 22,
+  "directions": 8,
+  "matrix_elements": 1681,
+  "max_elements": 100,
+  "max_origins": 4,
+  "max_destinations": 25,
+  "max_waypoints": 24,
+  "total_requests": 71,
+  "matrix_requests_unbatched_min": 17
+ }
+]
