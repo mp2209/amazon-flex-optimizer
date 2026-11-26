@@ -7,6 +7,25 @@ A web application that optimizes delivery routes for Amazon Flex drivers using m
 - **Backend** — FastAPI (containerized with Docker), deployed on AWS EC2
 - **Google Maps Platform APIs** — geocoding, driving distances, route geometry
 
+## Why I built this
+
+I drive for Amazon Flex. Every block starts the same way: pick up the
+packages at the station, open the Flex app, and follow the stop order it
+gives you. On some routes that order didn't look like the shortest way to
+me. A block pays the same no matter how far I drive, so every extra mile
+comes out of my own gas and time.
+
+So I built this to check. I put in the stops, run them through four
+different route solvers, and see whether there's a shorter way. On some of
+my routes it found a shorter order than the one Amazon gave me. That's what
+made me want to measure it properly, and it's what the
+[findings](#findings) below are about.
+
+If you enter the stops in the order the Flex app lists them, the shift
+summary shows how much shorter the optimized route is than Amazon's.
+Real routes are full of customers' addresses, so nothing in this repo uses
+them: the demo and the benchmark use public Atlanta landmarks instead.
+
 ## Findings
 
 I ran every solver in the app on 100 delivery shifts (25 each of 7, 15, 25
